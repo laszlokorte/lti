@@ -104,6 +104,28 @@
 		fill: hsl(-90, 100%, 50%);
 		opacity: 1;
 	}
+
+	@media (max-width: 35em) {
+		.system {
+			flex-direction: column;
+			justify-content: stretch;
+			justify-items: center;
+		}
+
+		.lti {
+			width:  50%;
+			margin: auto;
+		}
+
+		.arrow {
+			transform: rotate(90deg);
+		}
+
+		figure {
+			margin: 0;
+			align-self: stretch;
+		}
+	}
 </style>
 <article>
 
@@ -116,6 +138,8 @@
 	<dt><label for="fmin">Sample Count</label></dt>
 	<dd><input id="fmin" type="range" min="10" max={50} bind:value={sampleCount} on:input={() => {selected = null; selectedOutput = null}} /></dd>
 	<dd><output>{sampleCount}</output></dd>
+
+
 	<dt></dt>
 	<dd><button disabled={selected==null && selectedOutput==null} on:click={() => {selected = null; selectedOutput = null}}>clear selection</button></dd>
 	</dl>
@@ -137,12 +161,12 @@
 			<rect shape-rendering="crispEdges" class="clickable" class:selected={i==selected} on:click={() => {selectInput(i)}} y="{s*-10}" x="{i/inputSamplesLow.length*200 - 100 - 200/inputSamplesLow.length/2}"  width="{200/inputSamplesLow.length}" height="{s*10}" opacity="0.2" stroke="white" vector-effect="non-scaling-stroke"></rect>
 		{/each}
 			
-			{#if selectedOutput != null}
+		{#if selectedOutput != null}
 			{#each inputSamplesLow as s,i}
-			{#if !(i > selectedOutput)}
-				<rect shape-rendering="crispEdges" class="clickable" class:selected={i==selected} on:click={() => {selectInput(i)}} y="{s*-10}" x="{i/inputSamplesLow.length*200 - 100 - 200/inputSamplesLow.length/2}"  width="{200/inputSamplesLow.length}" height="{s*10}" fill="hsl({-90+360*(selectedOutput-i)/inputSamplesLow.length}, 100%, 50%)"></rect>
-			{/if}
-		{/each}
+				{#if !(i > selectedOutput)}
+					<rect shape-rendering="crispEdges" class="clickable" class:selected={i==selected} on:click={() => {selectInput(i)}} y="{s*-10}" x="{i/inputSamplesLow.length*200 - 100 - 200/inputSamplesLow.length/2}"  width="{200/inputSamplesLow.length}" height="{s*10}" fill="hsl({-90+360*(selectedOutput-i)/inputSamplesLow.length}, 100%, 50%)"></rect>
+				{/if}
+			{/each}
 		{/if}
 			
 			<polyline fill="none" stroke="red" points={inputSamples.flatMap((v,i,all) => [i/all.length*200 - 100, v*-10])}></polyline>
@@ -154,24 +178,29 @@
 				<polygon points="102 0 95 -3 95 3" fill="currentColor" />
 				<polygon points="0 -102 -3 -95 3 -95" fill="currentColor" />
 				<text x="95" y="-5" text-anchor="end">t</text>
-				<text y="-95" x="5" text-anchor="start">g(t)</text>
+				<text y="-95" x="5" text-anchor="start">f(t)</text>
 			</g>
 		</svg>
-		<figcaption>input signal f(t)</figcaption>
+		<figcaption>
+		input signal f(t)
+
+	<input style="width: 100%;" type="range" min="0" max={sampleCount} bind:value={selected} on:input={() => {selectedOutput = null}} />
+
+		</figcaption>
 	</figure>
 	<svg class="arrow" viewBox="0 -10 20 20">
 		<polygon points="0 5 10 5 10 10 20 0 10 -10 10 -5 0 -5" />
 	</svg>
 	<figure>
-	<svg class="graph" viewBox="-10 -110 220 120">		
+	<svg class="graph lti" viewBox="-10 -110 220 120">		
 		
 		
 		{#if selected != null || selectedOutput != null}
-		{#each impulseSamplesLow as s,i}
-			<rect shape-rendering="crispEdges" y="{s*-10*8}" x="{i/inputSamplesLow.length*200 - 200/inputSamplesLow.length/2}"  width="{200/inputSamplesLow.length}" height="{s*10*8}" fill="hsl({-90+360*i/impulseSamplesLow.length}, 100%, 50%)"></rect>
-		{/each}
+			{#each impulseSamplesLow as s,i}
+				<rect shape-rendering="crispEdges" y="{s*-10*8}" x="{i/inputSamplesLow.length*200 - 200/inputSamplesLow.length/2}"  width="{200/inputSamplesLow.length}" height="{s*10*8}" fill="hsl({-90+360*i/impulseSamplesLow.length}, 100%, 50%)"></rect>
+			{/each}
 		{/if}
-			<polyline fill="none" stroke="blue" points={impulseSamples.flatMap((v,i,all) => [i/all.length*200, v*-80])}></polyline>
+		<polyline fill="none" stroke="blue" points={impulseSamples.flatMap((v,i,all) => [i/all.length*200, v*-80])}></polyline>
 		
 		
 		<g color="black" font-size="10" pointer-events="none">
@@ -226,10 +255,14 @@
 			<polygon points="102 0 95 -3 95 3" fill="currentColor" />
 			<polygon points="0 -102 -3 -95 3 -95" fill="currentColor" />
 			<text x="95" y="-5" text-anchor="end">t</text>
-			<text y="-95" x="5" text-anchor="start">h(t)</text>
+			<text y="-95" x="5" text-anchor="start">g(t)</text>
 		</g>			
 	</svg>
-		<figcaption>output signal g(t)</figcaption>
+		<figcaption>
+		output signal g(t)
+
+	<input style="width: 100%;" type="range" min="0" max={sampleCount} bind:value={selectedOutput} on:input={() => {selected = null}} />
+		</figcaption>
 	</figure>
 </div>
 	
